@@ -1,0 +1,11 @@
+{
+    "executionEnvironments": [
+        {
+            "root": "backend",
+            "extraPaths": []
+        }
+    ],
+    "venvPath": "C:/Users/PC/Documents/pharmacy_store/backend",
+    "venv": "venv",
+    "pythonVersion": "3.13"
+}

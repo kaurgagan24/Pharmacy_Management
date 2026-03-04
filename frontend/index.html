@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaCare — Dashboard</title>
+    <meta name="description"
+        content="Pharmacy Store Management Dashboard — overview of orders, products, and inventory.">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <div class="app-wrapper">
+
+        <!-- ===== Sidebar ===== -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">⚛︎</div>
+                <div>
+                    <h2>PharmaCare</h2>
+                    <small>Management System</small>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Main</div>
+                <a href="index.html" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+                <a href="orders/orders.html"><i class="bi bi-receipt-cutoff"></i> Orders</a>
+
+                <div class="nav-section-title">Catalog</div>
+                <a href="products/products.html"><i class="bi bi-capsule"></i> Products</a>
+                <a href="inventory/inventory.html"><i class="bi bi-boxes"></i> Inventory</a>
+            </nav>
+        </aside>
+
+        <!-- ===== Main Content ===== -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="btn-sidebar-toggle"><i class="bi bi-list"></i></button>
+                <h1 class="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <span class="text-muted" style="font-size:13px;" id="currentDate"></span>
+                </div>
+            </header>
+
+            <!-- Page Container -->
+            <div class="page-container">
+
+                <!-- Summary Cards -->
+                <div class="dashboard-grid">
+                    <div class="summary-card primary">
+                        <div class="card-icon"><i class="bi bi-receipt-cutoff"></i></div>
+                        <div class="card-info">
+                            <h3 id="totalOrders">—</h3>
+                            <p>Total Orders</p>
+                        </div>
+                    </div>
+                    <div class="summary-card success">
+                        <div class="card-icon"><i class="bi bi-capsule"></i></div>
+                        <div class="card-info">
+                            <h3 id="totalProducts">—</h3>
+                            <p>Products</p>
+                        </div>
+                    </div>
+                    <div class="summary-card warning">
+                        <div class="card-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                        <div class="card-info">
+                            <h3 id="lowStockCount">—</h3>
+                            <p>Low Stock Alerts</p>
+                        </div>
+                    </div>
+                    <div class="summary-card info">
+                        <div class="card-icon"><i class="bi bi-clock-history"></i></div>
+                        <div class="card-info">
+                            <h3 id="pendingOrders">—</h3>
+                            <p>Pending Orders</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <h5 class="mb-3" style="font-weight:700; color: var(--gray-700);">Quick Actions</h5>
+                <div class="quick-actions">
+                    <a href="orders/order-form.html" class="quick-action-card">
+                        <i class="bi bi-plus-circle" style="color: var(--primary);"></i>
+                        <span>New Order</span>
+                    </a>
+                    <a href="products/product-form.html" class="quick-action-card">
+                        <i class="bi bi-capsule" style="color: var(--success);"></i>
+                        <span>Add Product</span>
+                    </a>
+                    <a href="inventory/inventory-form.html" class="quick-action-card">
+                        <i class="bi bi-boxes" style="color: var(--secondary);"></i>
+                        <span>Add Inventory</span>
+                    </a>
+                    <a href="orders/orders.html" class="quick-action-card">
+                        <i class="bi bi-list-ul" style="color: var(--info);"></i>
+                        <span>View All Orders</span>
+                    </a>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0" style="font-weight:700;">Recent Orders</h6>
+                        <a href="orders/orders.html" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="recentOrdersSpinner" class="spinner-overlay">
+                            <div class="spinner-border" role="status"><span class="visually-hidden">Loading…</span>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Patient</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="recentOrdersEmpty" class="empty-state" style="display:none;">
+                            <i class="bi bi-inbox"></i>
+                            <h5>No orders yet</h5>
+                            <p>Create your first order to see it here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Low Stock Alerts -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0" style="font-weight:700;"><i
+                                class="bi bi-exclamation-triangle text-warning me-2"></i>Low Stock Alerts</h6>
+                        <a href="inventory/inventory.html" class="btn btn-sm btn-outline-primary">Manage Inventory</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-container">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Qty On Hand</th>
+                                        <th>Reorder Threshold</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lowStockBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="lowStockEmpty" class="empty-state" style="display:none;">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <h5>All stock levels are healthy!</h5>
+                            <p>No items below their reorder threshold.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /page-container -->
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Current date
+            document.getElementById('currentDate').textContent =
+                new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            try {
+                const stats = await getDashboardStats();
+
+                // Summary cards
+                document.getElementById('totalOrders').textContent = stats.orders.length;
+                document.getElementById('totalProducts').textContent = stats.products.length;
+                document.getElementById('lowStockCount').textContent = stats.lowStock.length;
+                document.getElementById('pendingOrders').textContent = stats.pendingOrders.length;
+
+                // Build products map
+                const pMap = {};
+                stats.products.forEach(p => pMap[p.product_id] = p);
+
+                // Recent orders (last 5)
+                const spinner = document.getElementById('recentOrdersSpinner');
+                spinner && (spinner.style.display = 'none');
+                const tbody = document.getElementById('recentOrdersBody');
+                const recent = stats.orders.slice(0, 5);
+
+                if (recent.length) {
+                    tbody.innerHTML = recent.map(o => {
+                        const date = new Date(o.order_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        return `<tr>
+                            <td><strong>#${o.order_id}</strong></td>
+                            <td>${o.patient_name}</td>
+                            <td>$${parseFloat(o.total_amount).toFixed(2)}</td>
+                            <td><span class="badge badge-${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
+                            <td>${date}</td>
+                        </tr>`;
+                    }).join('');
+                } else {
+                    document.getElementById('recentOrdersEmpty').style.display = 'block';
+                }
+
+                // Low stock
+                const lowBody = document.getElementById('lowStockBody');
+                if (stats.lowStock.length) {
+                    lowBody.innerHTML = stats.lowStock.map(item => {
+                        const prod = pMap[item.product_id];
+                        return `<tr style="background-color:#fff8e1;">
+                            <td>${prod ? prod.name : 'Product #' + item.product_id}</td>
+                            <td><strong>${item.quantity_on_hand}</strong></td>
+                            <td>${item.reorder_threshold}</td>
+                            <td><span class="badge badge-low-stock"><i class="bi bi-exclamation-triangle"></i> Low</span></td>
+                        </tr>`;
+                    }).join('');
+                } else {
+                    document.getElementById('lowStockEmpty').style.display = 'block';
+                }
+
+            } catch (err) {
+                showToast('Failed to load dashboard data: ' + err.message, 'error');
+                document.getElementById('recentOrdersSpinner').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
